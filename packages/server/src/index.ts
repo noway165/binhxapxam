@@ -3,7 +3,8 @@ import { createMemoryStore } from './store/memoryStore';
 import { createPrismaStore } from './store/prismaStore';
 
 const production = process.env.NODE_ENV === 'production';
-const port = Number(process.env.PORT ?? 3000);
+const portArg = process.argv.indexOf('--port');
+const port = Number(portArg > 0 ? process.argv[portArg + 1] : (process.env.PORT ?? 3000));
 const jwtSecret = process.env.JWT_SECRET ?? (production ? '' : 'dev-secret-binh');
 if (!jwtSecret) throw new Error('JWT_SECRET là bắt buộc khi chạy production');
 
