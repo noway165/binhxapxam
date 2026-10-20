@@ -16,6 +16,8 @@ import type { SavedGame } from '../store/types';
 import { RoomError } from './RoomError';
 import { validateArrangement } from './validate';
 
+const SAVE_TIMEOUT_MS = 10_000;
+
 export interface RoomSink {
   state(v: RoomStateView): void;
   dealt(userId: string, p: DealtPayload): void;
@@ -170,8 +172,10 @@ export class Room {
     return this.members.filter((m) => !m.left);
   }
 
+  /** Earliest joiner who is online; a host who dropped off must not block the room. */
   private host(): Member | undefined {
-    return this.present()[0];
+    const present = this.present();
+    return present.find((m) => m.connected) ?? present[0];
   }
 
   private requireHost(userId: string): void {
@@ -227,8 +231,13 @@ export class Room {
     for (const { m } of arranged) m.roomScore += outcome.get(m.id)!.score;
 
     let gameId: string | null = null;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    // A slow or unreachable database must not freeze the table.
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('saveGame timed out')), SAVE_TIMEOUT_MS);
+    });
     try {
-      gameId = await this.saveGame({
+      const saving = this.saveGame({
         roomCode: this.code,
         timeLimitSec: this.timeLimitSec,
         startedAt: round.startedAt,
@@ -247,8 +256,12 @@ export class Room {
         }),
         pairs: scored.pairs,
       });
+      saving.catch(() => {}); // a late failure after the timeout is already logged below
+      gameId = await Promise.race([saving, timeout]);
     } catch (e) {
       console.error(`[room ${this.code}] saving game failed`, e);
+    } finally {
+      clearTimeout(timer);
     }
 
     const result: GameResultPayload = {

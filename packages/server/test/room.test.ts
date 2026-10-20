@@ -137,6 +137,21 @@ describe('submitting', () => {
     expect(p1.autoArranged).toBe(false);
   });
 
+  it('a hung save still reveals the result after 10 s with gameId null', async () => {
+    save.mockImplementationOnce(() => new Promise(() => {}));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const room = setup(2);
+    room.start('u1');
+    submitAuto(room, 'u1');
+    submitAuto(room, 'u2');
+    await vi.advanceTimersByTimeAsync(9_000);
+    expect(rec.results).toHaveLength(0);
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(rec.results).toHaveLength(1);
+    expect(rec.results[0].gameId).toBeNull();
+    expect(rec.last().phase).toBe('REVEAL');
+  });
+
   it('a failed save still reveals the result with gameId null', async () => {
     save.mockRejectedValueOnce(new Error('db down'));
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -216,6 +231,19 @@ describe('reconnect and membership', () => {
     const s1 = r1.players.find((p) => p.userId === 'u1')!.score;
     const s2 = r2.players.find((p) => p.userId === 'u1')!.score;
     expect(r2.players.find((p) => p.userId === 'u1')!.roomScore).toBe(s1 + s2);
+  });
+
+  it('a disconnected host hands control to the earliest connected player', async () => {
+    const room = setup(3);
+    room.setConnected('u1', false);
+    expect(rec.last().players.find((p) => p.isHost)!.userId).toBe('u2');
+    room.start('u2');
+    ['u1', 'u2', 'u3'].forEach((id) => submitAuto(room, id));
+    await flush();
+    room.next('u2');
+    expect(rec.last().phase).toBe('ARRANGING');
+    room.setConnected('u1', true);
+    expect(rec.last().players.find((p) => p.isHost)!.userId).toBe('u1');
   });
 
   it('reports when no one is connected', () => {

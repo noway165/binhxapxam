@@ -14,10 +14,11 @@ export default function RoomPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const joining = useRef(false);
+  const leaving = useRef(false);
   const room = game.room?.code === code ? game.room : null;
 
   useEffect(() => {
-    if (!game.ready || !game.connected || room || joining.current) return;
+    if (!game.ready || !game.connected || room || joining.current || leaving.current) return;
     joining.current = true;
     void emitAck('room:join', { code }).then((ack) => {
       joining.current = false;
@@ -26,6 +27,8 @@ export default function RoomPage() {
   }, [game.ready, game.connected, room, code, navigate]);
 
   async function leave() {
+    // The server clears our room state before acking; don't let the auto-join fire in between.
+    leaving.current = true;
     await emitAck('room:leave');
     navigate('/');
   }
