@@ -7,3 +7,4 @@ export * from './splits';
 export * from './special';
 export * from './scoring';
 export * from './autoArrange';
+export * from './protocol';
