@@ -1,6 +1,8 @@
+import http from 'node:http';
 import cookieParser from 'cookie-parser';
 import express, { type ErrorRequestHandler } from 'express';
 import { authRoutes } from './auth/routes';
+import { attachSocket } from './socket';
 import type { Store } from './store/types';
 
 export interface AppOptions {
@@ -22,4 +24,11 @@ export function createApp(opts: AppOptions): express.Express {
   };
   app.use(onError);
   return app;
+}
+
+export function createServer(opts: AppOptions) {
+  const app = createApp(opts);
+  const httpServer = http.createServer(app);
+  const { io, manager } = attachSocket(httpServer, opts);
+  return { app, httpServer, io, manager };
 }
