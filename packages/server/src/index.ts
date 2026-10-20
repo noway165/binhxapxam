@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { createServer } from './app';
 import { createMemoryStore } from './store/memoryStore';
 import { createPrismaStore } from './store/prismaStore';
@@ -11,5 +13,8 @@ if (!jwtSecret) throw new Error('JWT_SECRET là bắt buộc khi chạy producti
 const store = process.env.DATABASE_URL ? createPrismaStore(process.env.DATABASE_URL) : createMemoryStore();
 if (!process.env.DATABASE_URL) console.warn('Không có DATABASE_URL – dữ liệu chỉ lưu trong bộ nhớ');
 
-const { httpServer } = createServer({ store, jwtSecret, secureCookies: production });
+const dist = process.env.CLIENT_DIST ?? resolve(import.meta.dirname, '../../client/dist');
+const clientDist = existsSync(resolve(dist, 'index.html')) ? dist : undefined;
+
+const { httpServer } = createServer({ store, jwtSecret, secureCookies: production, clientDist });
 httpServer.listen(port, () => console.log(`Listening on ${port}`));

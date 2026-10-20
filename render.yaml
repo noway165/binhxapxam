@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: binhxapxam
+    runtime: node
+    region: singapore
+    plan: free
+    # --include=dev: the build (vite) and start (tsx, prisma) tools are devDependencies.
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "24"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false

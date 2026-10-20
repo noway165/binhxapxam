@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { join } from 'node:path';
 import cookieParser from 'cookie-parser';
 import express, { type ErrorRequestHandler } from 'express';
 import { apiRoutes } from './api/routes';
@@ -10,6 +11,8 @@ export interface AppOptions {
   store: Store;
   jwtSecret: string;
   secureCookies: boolean;
+  /** Built client (Vite dist) to serve, with index.html as the SPA fallback. */
+  clientDist?: string;
 }
 
 export function createApp(opts: AppOptions): express.Express {
@@ -19,6 +22,14 @@ export function createApp(opts: AppOptions): express.Express {
   app.use(cookieParser());
   app.use('/api', authRoutes(opts));
   app.use('/api', apiRoutes(opts));
+  if (opts.clientDist) {
+    const dist = opts.clientDist;
+    app.use(express.static(dist, { index: false }));
+    app.use((req, res, next) => {
+      if (req.method !== 'GET' || req.path.startsWith('/api') || req.path.startsWith('/socket.io')) return next();
+      res.sendFile(join(dist, 'index.html'));
+    });
+  }
 
   const onError: ErrorRequestHandler = (err, _req, res, _next) => {
     console.error(err);
