@@ -1,6 +1,9 @@
 import { useEffect, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './auth';
+import GameDetail from './pages/GameDetail';
+import History from './pages/History';
+import Leaderboard from './pages/Leaderboard';
 import Lobby from './pages/Lobby';
 import Login from './pages/Login';
 import RoomPage from './pages/RoomPage';
@@ -47,6 +50,9 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<RequireAuth><Lobby /></RequireAuth>} />
           <Route path="/room/:code" element={<RequireAuth><RoomPage /></RequireAuth>} />
+          <Route path="/history" element={<RequireAuth><History /></RequireAuth>} />
+          <Route path="/games/:id" element={<RequireAuth><GameDetail /></RequireAuth>} />
+          <Route path="/leaderboard" element={<RequireAuth><Leaderboard /></RequireAuth>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster />

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TIME_LIMIT, type RoomStateView } from '@binh/rules';
 import ArrangeBoard from '../arrange/ArrangeBoard';
 import { useAuth } from '../auth';
+import RevealView from '../components/RevealView';
 import Timer from '../components/Timer';
 import { emitAck, useGame } from '../socket';
 import { toast } from '../toast';
@@ -44,6 +45,18 @@ export default function RoomPage() {
       </header>
       {room.phase === 'WAITING' && <Waiting room={room} isHost={!!me?.isHost} />}
       {room.phase === 'ARRANGING' && <Arranging room={room} myId={user?.id ?? ''} />}
+      {room.phase === 'REVEAL' && game.result && (
+        <>
+          <RevealView key={game.result.gameId ?? 'r'} result={game.result} animate myUserId={user?.id} />
+          {me?.isHost ? (
+            <button className="primary block" onClick={() => void emitAck('game:next')}>
+              Ván mới
+            </button>
+          ) : (
+            <p className="muted center">Chờ chủ phòng bắt đầu ván mới…</p>
+          )}
+        </>
+      )}
     </main>
   );
 }

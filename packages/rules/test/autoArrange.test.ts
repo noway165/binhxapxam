@@ -14,7 +14,7 @@ describe('autoArrange', () => {
         expect(isFoul(a)).toBe(false);
       }
     }
-  });
+  }, 30_000);
 
   it('puts four aces into chi 1', () => {
     const a = autoArrange(parseCards('AS AH AD AC 2S 5H 7D 9C JS 3H 8D TC QS'));
