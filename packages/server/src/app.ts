@@ -1,6 +1,7 @@
 import http from 'node:http';
 import cookieParser from 'cookie-parser';
 import express, { type ErrorRequestHandler } from 'express';
+import { apiRoutes } from './api/routes';
 import { authRoutes } from './auth/routes';
 import { attachSocket } from './socket';
 import type { Store } from './store/types';
@@ -17,6 +18,7 @@ export function createApp(opts: AppOptions): express.Express {
   app.use(express.json());
   app.use(cookieParser());
   app.use('/api', authRoutes(opts));
+  app.use('/api', apiRoutes(opts));
 
   const onError: ErrorRequestHandler = (err, _req, res, _next) => {
     console.error(err);
