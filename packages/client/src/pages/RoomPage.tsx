@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TIME_LIMIT, type RoomStateView } from '@binh/rules';
+import ArrangeBoard from '../arrange/ArrangeBoard';
 import { useAuth } from '../auth';
+import Timer from '../components/Timer';
 import { emitAck, useGame } from '../socket';
 import { toast } from '../toast';
 
@@ -41,7 +43,40 @@ export default function RoomPage() {
         </button>
       </header>
       {room.phase === 'WAITING' && <Waiting room={room} isHost={!!me?.isHost} />}
+      {room.phase === 'ARRANGING' && <Arranging room={room} myId={user?.id ?? ''} />}
     </main>
+  );
+}
+
+const STATUS_TEXT = { arranging: 'Đang xếp', submitted: 'Xong', waitingNext: 'Chờ ván sau', idle: '' } as const;
+
+function Arranging({ room, myId }: { room: RoomStateView; myId: string }) {
+  const { dealt } = useGame();
+  const me = room.players.find((p) => p.userId === myId);
+  const others = room.players.filter((p) => p.userId !== myId);
+  return (
+    <>
+      <div className="opponents">
+        {others.map((p) => (
+          <span key={p.userId} className={`opponent ${p.status}`}>
+            {p.username}: {p.connected ? STATUS_TEXT[p.status] : 'Mất kết nối'}
+          </span>
+        ))}
+        {room.deadline && <Timer deadline={room.deadline} />}
+      </div>
+      {me?.status === 'waitingNext' || !dealt ? (
+        <p className="card-panel center muted">Bạn sẽ chơi từ ván sau…</p>
+      ) : (
+        <ArrangeBoard
+          key={dealt.deadline}
+          cards={dealt.cards}
+          initial={dealt.submitted}
+          locked={me?.status === 'submitted'}
+          onSubmit={(a) => void emitAck('hand:submit', a)}
+          onUnsubmit={() => void emitAck('hand:unsubmit')}
+        />
+      )}
+    </>
   );
 }
 
