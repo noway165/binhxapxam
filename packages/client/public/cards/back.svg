@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-120 -168 240 336" width="2.5in" height="3.5in">
+  <defs>
+    <pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="16" height="16" fill="#7a1f2b"/>
+      <rect width="8" height="16" fill="#932634"/>
+    </pattern>
+  </defs>
+  <rect x="-119.5" y="-167.5" width="239" height="335" rx="12" fill="#f6efdc" stroke="#3b2a08"/>
+  <rect x="-106" y="-154" width="212" height="308" rx="8" fill="url(#p)"/>
+  <rect x="-106" y="-154" width="212" height="308" rx="8" fill="none" stroke="#d9b45a" stroke-width="3"/>
+  <circle r="34" fill="#7a1f2b" stroke="#d9b45a" stroke-width="3"/>
+  <text y="14" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#d9b45a">♠</text>
+</svg>
