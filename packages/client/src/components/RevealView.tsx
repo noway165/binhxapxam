@@ -9,7 +9,7 @@ import {
   type GameResultPayload,
   type HandValue,
 } from '@binh/rules';
-import CardView from './CardView';
+import PlayingCard from '../cards/PlayingCard';
 
 const STEP_MS = 1500;
 /** Rows top to bottom, like the arrangement board; `step` is when each chi flips. */
@@ -85,7 +85,7 @@ export default function RevealView({ result, animate, myUserId }: Props) {
                   </span>
                   <div className="cards small">
                     {p.arrangement[key].map((c, i) => (
-                      <CardView key={i} card={c} faceDown={!shown} tabIndex={-1} />
+                      <PlayingCard key={i} card={c} faceDown={!shown} size="sm" tabIndex={-1} />
                     ))}
                   </div>
                 </div>

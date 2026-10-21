@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { catName, evaluate, foulMessage, foulReason, type Arrangement, type Card } from '@binh/rules';
-import CardView from '../components/CardView';
+import PlayingCard from '../cards/PlayingCard';
 import { CHI_RANGES, fromArrangement, initialSlots, sortWithinChis, swap, toArrangement } from './arrangeState';
 
 interface Props {
@@ -52,7 +52,7 @@ export default function ArrangeBoard({ cards, initial, locked, onSubmit, onUnsub
               {slots.slice(from, to).map((card, k) => {
                 const i = from + k;
                 return (
-                  <CardView
+                  <PlayingCard
                     key={i}
                     data-testid={`slot-${i}`}
                     card={card}
