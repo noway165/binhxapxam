@@ -4,6 +4,7 @@ import { TIME_LIMIT, type RoomStateView } from '@binh/rules';
 import ArrangeBoard from '../arrange/ArrangeBoard';
 import { useAuth } from '../auth';
 import RevealView from '../components/RevealView';
+import SoundToggle from '../components/SoundToggle';
 import Timer from '../components/Timer';
 import { emitAck, useGame } from '../socket';
 import { toast } from '../toast';
@@ -39,12 +40,13 @@ export default function RoomPage() {
   return (
     <main className="page">
       <header className="room-header">
-        <span>
-          Phòng <b>{room.code}</b>
+        <span className="code">Phòng {room.code}</span>
+        <span className="row">
+          <SoundToggle />
+          <button className="link" onClick={leave}>
+            Rời phòng
+          </button>
         </span>
-        <button className="link" onClick={leave}>
-          Rời phòng
-        </button>
       </header>
       {room.phase === 'WAITING' && <Waiting room={room} isHost={!!me?.isHost} />}
       {room.phase === 'ARRANGING' && <Arranging room={room} myId={user?.id ?? ''} />}

@@ -472,3 +472,9 @@ li.me {
   color: var(--text);
   text-decoration: none;
 }
+
+.sound-toggle {
+  padding: 4px 8px;
+  font-size: 18px;
+  line-height: 1;
+}
