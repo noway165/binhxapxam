@@ -34,6 +34,9 @@ export default function Login() {
   return (
     <main className="page narrow">
       <h1 className="logo">Binh Xập Xám</h1>
+      <p className="logo-suits" aria-hidden="true">
+        ♠ <span className="red">♥</span> ♣ <span className="red">♦</span>
+      </p>
       <div className="tabs" role="tablist">
         {(['login', 'register'] as Mode[]).map((m) => (
           <button

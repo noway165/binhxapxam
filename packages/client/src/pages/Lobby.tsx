@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 import { emitAck, useGame } from '../socket';
+import { avatarColor, initials } from '../table/avatar';
 
 export default function Lobby() {
   const { user, refresh, logout } = useAuth();
@@ -27,10 +28,18 @@ export default function Lobby() {
   return (
     <main className="page narrow">
       <h1 className="logo">Binh Xập Xám</h1>
+      <p className="logo-suits" aria-hidden="true">
+        ♠ <span className="red">♥</span> ♣ <span className="red">♦</span>
+      </p>
       <section className="card-panel">
-        <p>
-          Xin chào <b>{user?.username}</b>
-        </p>
+        <div className="row">
+          <span className="avatar" style={{ background: avatarColor(user?.username ?? '') }}>
+            {initials(user?.username ?? '')}
+          </span>
+          <span>
+            Xin chào <b>{user?.username}</b>
+          </span>
+        </div>
         <p className="muted">
           Tổng điểm: <b className={(user?.totalScore ?? 0) >= 0 ? 'plus' : 'minus'}>{user?.totalScore ?? 0}</b> ·{' '}
           {user?.gamesPlayed ?? 0} ván

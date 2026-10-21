@@ -4,6 +4,8 @@ import type { LeaderboardRow } from '@binh/rules';
 import { api } from '../api';
 import { useAuth } from '../auth';
 
+const MEDALS = ['🥇', '🥈', '🥉'];
+
 export default function Leaderboard() {
   const { user } = useAuth();
   const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
@@ -22,7 +24,7 @@ export default function Leaderboard() {
         {rows?.map((r, i) => (
           <li key={r.username} className={r.username === user?.username ? 'me' : ''}>
             <span>
-              {i + 1}. {r.username} <span className="muted">· {r.gamesPlayed} ván</span>
+              {MEDALS[i] ?? `${i + 1}.`} {r.username} <span className="muted">· {r.gamesPlayed} ván</span>
             </span>
             <b className={r.totalScore >= 0 ? 'plus' : 'minus'}>{r.totalScore}</b>
           </li>
