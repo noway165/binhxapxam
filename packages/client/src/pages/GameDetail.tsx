@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import type { GameDetail as Detail } from '@binh/rules';
 import { api } from '../api';
 import { useAuth } from '../auth';
-import RevealView from '../components/RevealView';
+import RevealTable from '../reveal/RevealTable';
 
 export default function GameDetail() {
   const { id = '' } = useParams();
@@ -22,7 +22,7 @@ export default function GameDetail() {
       {game && (
         <>
           <p className="muted">{new Date(game.endedAt).toLocaleString('vi-VN')}</p>
-          <RevealView result={game} animate={false} myUserId={user?.id} />
+          <RevealTable result={game} animate={false} myUserId={user?.id} />
         </>
       )}
     </main>

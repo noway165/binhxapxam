@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parseCards, scoreRound, type GameResultPayload, type PlayerInput } from '@binh/rules';
-import RevealView from '../src/components/RevealView';
+import RevealTable from '../src/reveal/RevealTable';
 
 const P = (id: string, c1: string, c2: string, c3: string): PlayerInput => ({
   id,
@@ -36,9 +36,9 @@ const faceDown = () => screen.queryAllByLabelText('Lá úp').length;
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
 
-describe('RevealView', () => {
+describe('RevealTable', () => {
   it('flips chi 1, then chi 2, then chi 3 and shows the summary', () => {
-    render(<RevealView result={result([A, B])} animate myUserId="A" />);
+    render(<RevealTable result={result([A, B])} animate myUserId="A" />);
     expect(faceDown()).toBe(26);
     expect(screen.queryByText('Tổng kết')).toBeNull();
     act(() => vi.advanceTimersByTime(1500));
@@ -49,27 +49,48 @@ describe('RevealView', () => {
   });
 
   it('labels foul, sập hầm and auto-arranged hands', () => {
-    render(<RevealView result={result([A, B, F])} animate={false} />);
+    render(<RevealTable result={result([A, B, F])} animate={false} />);
     expect(screen.getByText('Binh lủng')).toBeInTheDocument();
     expect(screen.getAllByText('Sập hầm').length).toBeGreaterThan(0);
     expect(screen.getByText('Máy xếp')).toBeInTheDocument();
   });
 
   it('labels an instant win', () => {
-    render(<RevealView result={result([T, A])} animate={false} />);
+    render(<RevealTable result={result([T, A])} animate={false} />);
     expect(screen.getAllByText('3 thùng').length).toBeGreaterThan(0);
   });
 
   it('highlights the strongest chi among players who did not foul', () => {
-    render(<RevealView result={result([A, B, F])} animate={false} />);
+    render(<RevealTable result={result([A, B, F])} animate={false} />);
     expect(screen.getByTestId('row-A-chi1')).toHaveClass('best');
     expect(screen.getByTestId('row-B-chi1')).not.toHaveClass('best');
     expect(screen.getByTestId('row-F-chi1')).not.toHaveClass('best');
   });
 
   it('shows everything at once without animation', () => {
-    render(<RevealView result={result([A, B])} animate={false} />);
+    render(<RevealTable result={result([A, B])} animate={false} />);
     expect(faceDown()).toBe(0);
     expect(screen.getByText('Tổng kết')).toBeInTheDocument();
+  });
+
+  it('can skip the animation straight to the summary (RF4)', async () => {
+    render(<RevealTable result={result([A, B])} animate myUserId="A" />);
+    expect(faceDown()).toBe(26);
+    act(() => screen.getByRole('button', { name: 'Bỏ qua' }).click());
+    expect(faceDown()).toBe(0);
+    expect(screen.getByText('Tổng kết')).toBeInTheDocument();
+  });
+
+  it('has no skip button when not animating (RF4)', () => {
+    render(<RevealTable result={result([A, B])} animate={false} />);
+    expect(screen.queryByRole('button', { name: 'Bỏ qua' })).toBeNull();
+  });
+
+  it('announces sập hầm and instant wins with a banner', () => {
+    const { unmount } = render(<RevealTable result={result([A, B])} animate={false} myUserId="A" />);
+    expect(screen.getByText('SẬP HẦM')).toBeInTheDocument();
+    unmount();
+    render(<RevealTable result={result([T, A])} animate={false} myUserId="A" />);
+    expect(screen.getByText(/THẮNG TRẮNG/)).toBeInTheDocument();
   });
 });
