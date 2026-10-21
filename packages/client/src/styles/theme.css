@@ -478,3 +478,246 @@ li.me {
   font-size: 18px;
   line-height: 1;
 }
+
+/* ---- Table ---- */
+
+.table-wrap {
+  padding: 40px 6px 56px;
+}
+
+.felt {
+  position: relative;
+  height: clamp(250px, 50vw, 360px);
+  border-radius: 50% / 46%;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 4px),
+    radial-gradient(ellipse at center, #2b7a52 0%, var(--felt) 55%, var(--felt-dark) 100%);
+  border: 12px solid var(--wood);
+  box-shadow:
+    inset 0 0 0 2px rgba(217, 180, 90, 0.55),
+    inset 0 0 40px rgba(0, 0, 0, 0.5),
+    0 0 0 3px var(--wood-light),
+    0 14px 30px rgba(0, 0, 0, 0.6);
+}
+
+.felt-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.felt-title {
+  font-family: var(--font-title);
+  color: rgba(217, 180, 90, 0.35);
+  font-size: clamp(20px, 5vw, 34px);
+  letter-spacing: 2px;
+}
+
+.seat {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100px;
+  text-align: center;
+  z-index: 2;
+}
+
+.seat-top {
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.seat-left {
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.seat-right {
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.seat-bottom {
+  bottom: -52px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.avatar {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.avatar.empty {
+  background: rgba(0, 0, 0, 0.3);
+  border-style: dashed;
+  color: var(--gold);
+  font-size: 22px;
+}
+
+.crown {
+  position: absolute;
+  top: -15px;
+  font-size: 16px;
+}
+
+.seat.offline .avatar {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.seat-info {
+  display: grid;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(217, 180, 90, 0.4);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.seat-name {
+  font-weight: 600;
+  max-width: 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seat-status {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.seat-status.done {
+  color: var(--win);
+}
+
+.seat-status.offline {
+  color: #ff8a8a;
+}
+
+.seat-status.busy::after {
+  content: '…';
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.seat-backs {
+  display: flex;
+}
+
+.seat-backs .pcard {
+  width: 22px;
+  height: 31px;
+}
+
+.seat-backs .pcard + .pcard {
+  margin-left: -12px;
+}
+
+button.invite {
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Thin strip of opponents while arranging. */
+.table-strip {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at center, #2b7a52, var(--felt-dark));
+  border: 5px solid var(--wood);
+  box-shadow: inset 0 0 0 1px rgba(217, 180, 90, 0.5);
+}
+
+.table-strip .seat {
+  position: static;
+  transform: none;
+  flex-direction: row;
+  width: auto;
+  text-align: left;
+}
+
+.table-strip .avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+
+.strip-center {
+  margin-left: auto;
+}
+
+/* ---- Timer ring ---- */
+
+.timer-ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.timer-ring circle {
+  fill: none;
+  stroke-width: 6;
+}
+
+.timer-ring .track {
+  stroke: rgba(0, 0, 0, 0.35);
+}
+
+.timer-ring .bar {
+  stroke: var(--gold);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.25s linear;
+}
+
+.timer-ring.urgent .bar {
+  stroke: #ff5252;
+}
+
+.timer-ring.urgent {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.timer-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
