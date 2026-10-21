@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TIME_LIMIT, type RoomStateView } from '@binh/rules';
-import ArrangeBoard from '../arrange/ArrangeBoard';
+import ArrangeTray from '../arrange/ArrangeTray';
 import { useAuth } from '../auth';
 import RevealView from '../components/RevealView';
 import SoundToggle from '../components/SoundToggle';
@@ -80,10 +80,11 @@ function Arranging({ room, myId }: { room: RoomStateView; myId: string }) {
       {me?.status === 'waitingNext' || !dealt ? (
         <p className="card-panel center muted">Bạn sẽ chơi từ ván sau…</p>
       ) : (
-        <ArrangeBoard
+        <ArrangeTray
           key={dealt.deadline}
           cards={dealt.cards}
           initial={dealt.submitted}
+          deal={!dealt.submitted}
           locked={me?.status === 'submitted'}
           onSubmit={(a) => void emitAck('hand:submit', a)}
           onUnsubmit={() => void emitAck('hand:unsubmit')}

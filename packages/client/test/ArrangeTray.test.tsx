@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { parseCards } from '@binh/rules';
-import ArrangeBoard from '../src/arrange/ArrangeBoard';
+import ArrangeTray from '../src/arrange/ArrangeTray';
 
 // Sorted by rank this deals A K Q J 9 | 8 7 5 4 3 | 2 2 2 → chi 3 (xám) beats chi 2: a foul.
 const fouling = parseCards('AS KD QH JC 9S 8D 7H 5C 4S 3D 2C 2D 2H');
@@ -12,11 +12,11 @@ const label = (slot: number) => screen.getByTestId(`slot-${slot}`).getAttribute(
 function setup(locked = false) {
   const onSubmit = vi.fn();
   const onUnsubmit = vi.fn();
-  render(<ArrangeBoard cards={fouling} initial={null} locked={locked} onSubmit={onSubmit} onUnsubmit={onUnsubmit} />);
+  render(<ArrangeTray cards={fouling} initial={null} locked={locked} onSubmit={onSubmit} onUnsubmit={onUnsubmit} />);
   return { onSubmit, onUnsubmit };
 }
 
-describe('ArrangeBoard', () => {
+describe('ArrangeTray', () => {
   it('tapping two cards swaps them', async () => {
     setup();
     const [a, b] = [label(0), label(12)];

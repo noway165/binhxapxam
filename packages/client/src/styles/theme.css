@@ -354,22 +354,27 @@ li.me {
   box-shadow: 0 0 0 3px var(--gold), 0 0 14px rgba(217, 180, 90, 0.8);
 }
 
-/* ---- Arranging (replaced by the tray in a later step) ---- */
+/* ---- Arrange tray ---- */
 
-.board {
-  background: var(--panel);
-  border-radius: var(--radius);
-  padding: 12px;
+.tray {
+  background: linear-gradient(180deg, #24331f, #18241a);
+  border: 4px solid var(--wood);
+  border-radius: 16px;
+  padding: 12px 10px;
   display: grid;
-  gap: 12px;
-  border: 2px solid transparent;
+  gap: 10px;
+  box-shadow: inset 0 0 0 1px rgba(217, 180, 90, 0.4), 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
-.board.foul {
+.tray.foul {
   border-color: var(--red);
 }
 
-.chi-row {
+.tray.locked .tray-cards {
+  opacity: 0.85;
+}
+
+.tray-row {
   display: grid;
   gap: 6px;
 }
@@ -379,38 +384,39 @@ li.me {
   color: var(--muted);
 }
 
+.tray-cards {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.tray-slot {
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.tray-card {
+  touch-action: none;
+  cursor: grab;
+  perspective: 600px;
+}
+
+.tray-card:active {
+  cursor: grabbing;
+}
+
+.tray-actions button {
+  padding: 12px 10px;
+}
+
+.tray-actions .primary {
+  font-size: 17px;
+}
+
 .cards {
   display: flex;
   gap: 6px;
   flex-wrap: nowrap;
-}
-
-.opponents {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.opponent {
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.opponent.submitted {
-  background: rgba(126, 226, 168, 0.25);
-}
-
-.timer {
-  margin-left: auto;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.timer.urgent {
-  color: #ff6b6b;
 }
 
 /* ---- Reveal ---- */
